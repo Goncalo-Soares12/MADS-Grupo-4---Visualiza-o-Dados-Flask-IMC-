@@ -45,13 +45,10 @@ IMC = Peso (kg) / Altura² (m²)
 ```
 flask-dados-imc/
 │
-├── app.py                  # Código principal da aplicação Flask
-├── README.md               # Este arquivo
-├── requirements.txt        # Dependências do projeto
-├── .render.yaml            # Configuração do deploy na Render
-├── .gitignore              # Arquivos/pastas ignoradas pelo Git
+├── app.py                  
+├── README.md               
 └── dados/
-    └── dados_pessoais_com_imc.xlsx  # Base de dados em Excel
+    └── dados_pessoais_com_imc.xlsx
 ```
 
 ---
