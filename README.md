@@ -56,45 +56,6 @@ flask-dados-imc/
 
 ---
 
-## 🚀 Como publicar na Render
-
-### 1. Faça push para o GitHub
-
-Crie um repositório e envie os arquivos para ele:
-
-```bash
-git init
-git add .
-git commit -m "Projeto Flask IMC"
-git remote add origin https://github.com/seu-usuario/flask-dados-imc.git
-git push -u origin main
-```
-
-### 2. Crie o serviço na Render
-
-1. Acesse [render.com](https://render.com)
-2. Clique em **New > Web Service**
-3. Conecte ao seu repositório GitHub
-4. Configure:
-   - **Build Command:** `pip install -r requirements.txt`
-   - **Start Command:** `python app.py`
-   - **Environment:** Python 3
-   - **Public URL:** Será fornecida pela Render
-
-### 3. Adicione a pasta `dados/` com o arquivo `dados_pessoais_com_imc.xlsx` via GitHub ou use armazenamento externo (S3, etc.)
-
----
-
-## 🌐 Acessar aplicação online
-
-Após o deploy, sua aplicação estará disponível em algo como:
-
-```
-https://flask-imc-nome-do-servico.onrender.com
-```
-
----
-
 ## 🔐 Palavras-passe de acesso (teste)
 
 - Nível 1: `acesso1`
@@ -118,7 +79,3 @@ openpyxl
 > **Este projeto utiliza dados fictícios para fins educativos. Nenhum dado real é utilizado.**
 
 ---
-
-## 📄 Licença
-
-Distribuído sob a licença MIT. Veja `LICENSE` para mais informações (adicione se quiser).
