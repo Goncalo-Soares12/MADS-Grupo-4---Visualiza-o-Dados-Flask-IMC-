@@ -1,4 +1,4 @@
-# 🌐 Sistema de Visualização de Dados com Flask - IMC
+# 🌐 Sistema de Visualização de Dados com Render - IMC
 
 Este é um projeto web em Python/Flask que apresenta uma página pública e áreas privadas com diferentes níveis de acesso a dados pessoais e de saúde fictícios, com foco no **IMC (Índice de Massa Corporal)**.
 
