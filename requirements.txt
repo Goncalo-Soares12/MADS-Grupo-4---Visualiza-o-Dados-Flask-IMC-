@@ -2,3 +2,4 @@ Flask
 pandas
 Datetime
 gunicorn
+openpyxl
