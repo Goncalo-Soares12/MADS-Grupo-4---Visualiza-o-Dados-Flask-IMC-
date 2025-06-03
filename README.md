@@ -19,7 +19,7 @@ Este é um projeto web em Python/Flask que apresenta uma página pública e áre
 - Flask
 - pandas
 - HTML + CSS + JS (DataTables)
-- Deploy: [Render.com](https://render.com)
+- Deploy: [Render.com](https://mads-grupo-4-visualiza-o-dados-render-imc.onrender.com)
 
 ---
 
