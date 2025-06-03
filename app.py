@@ -129,4 +129,4 @@ def render_page(titulo, tabela_html, erro=None, link_home=False, mostrar_form=Fa
     """
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
