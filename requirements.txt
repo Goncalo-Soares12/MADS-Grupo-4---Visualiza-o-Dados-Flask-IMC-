@@ -2,4 +2,7 @@ Flask
 pandas
 Datetime
 gunicorn
-openpyxl
+plotly
+folium
+gspread
+oauth2client
