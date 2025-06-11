@@ -6,10 +6,10 @@ Este é um projeto web em Python/Flask que apresenta uma página pública e áre
 
 - ✅ Página pública com dados básicos e explicação do IMC
 - 🔐 Área privada Nível 1: acesso com palavra-passe (`acesso1`) com mais detalhes, incluindo email e telefone
-- 🔐 Área privada Nível 2: acesso com palavra-passe (`acesso2`) e dados completos, exceto morada
+- 🔐 Área privada Nível 2: acesso com palavra-passe (`acesso2`) com mapa interativo
 - 🔑 Acesso individual por NIF
 - 📊 Tabelas dinâmicas com ordenação, busca e paginação via DataTables
-- 📁 Dados carregados de um ficheiro Excel (`dados_pessoais_com_imc.xlsx`)
+- 📁 Dados carregados de um ficheiro Google Sheet: [GoogleSheet](https://docs.google.com/spreadsheets/d/1QPioUWqLQ0v5HZ4An0exK52sNCOSIyiDsxpMgM0cKxA/edit?gid=940413956#gid=940413956)
 
 ---
 
@@ -47,8 +47,8 @@ flask-dados-imc/
 │
 ├── app.py                  
 ├── README.md               
-└── dados/
-    └── dados_pessoais_com_imc.xlsx
+└── static/
+    └── obesidade.ico
 ```
 
 ---
