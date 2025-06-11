@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, send_from_directory
+from flask import Flask, request, redirect, render_template
 import pandas as pd
 import datetime
 import plotly.express as px
@@ -7,34 +7,29 @@ from folium.plugins import MarkerCluster
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import os
-import json
 
 app = Flask(__name__)
 
 # Configuração do Google Sheets
-SCOPE = ['https://www.googleapis.com/auth/spreadsheets']  # Apenas Sheets API
-SHEET_ID = '1QPioUWqLQ0v5HZ4An0exK52sNCOSIyiDsxpMgM0cKxA'  # Substitua pelo ID da sua planilha
+SCOPE = ['https://www.googleapis.com/auth/spreadsheets']
+SHEET_ID = '1QPioUWqLQ0v5HZ4An0exK52sNCOSIyiDsxpMgM0cKxA'
 
-# Autenticação - lê de variável de ambiente ou arquivo local
+# Caminhos possíveis para o arquivo de credenciais
+SECRET_PATHS = [
+    '/etc/secrets/tasty-2-0-e6fb412ba5ff.json',  # Para produção (Secret Files)
+    'secrets/tasty-2-0-e6fb412ba5ff.json'  # Para desenvolvimento local
+]
+
 def get_credentials():
-    # Tenta ler do GitHub Secrets (variável de ambiente)
-    service_account_json = os.getenv('SERVICE_ACCOUNT_JSON')
+    # Procura o arquivo de credenciais nos caminhos possíveis
+    for creds_path in SECRET_PATHS:
+        if os.path.exists(creds_path):
+            try:
+                return ServiceAccountCredentials.from_json_keyfile_name(creds_path, SCOPE)
+            except Exception as e:
+                print(f"Erro ao carregar credenciais de {creds_path}: {str(e)}")
     
-    if service_account_json:
-        try:
-            # Se a variável de ambiente existe, carrega como JSON
-            creds_dict = json.loads(service_account_json)
-            return ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, SCOPE)
-        except json.JSONDecodeError as e:
-            print(f"Erro ao decodificar JSON da variável de ambiente: {str(e)}")
-    
-    # Se não encontrou na variável de ambiente, tenta ler do arquivo local
-    local_creds_file = 'secrets/tasty-2-0-e6fb412ba5ff.json'
-    try:
-        return ServiceAccountCredentials.from_json_keyfile_name(local_creds_file, SCOPE)
-    except Exception as e:
-        print(f"Erro ao carregar credenciais do arquivo local: {str(e)}")
-        raise
+    raise Exception("Nenhum arquivo de credenciais válido encontrado nos caminhos: " + ", ".join(SECRET_PATHS))
 
 # Inicializa o cliente do Google Sheets
 try:
@@ -75,9 +70,6 @@ def calcular_idade(data_nascimento):
 
 def load_data():
     try:
-        if not client:
-            return pd.DataFrame()
-            
         sheet = client.open_by_key(SHEET_ID).sheet1
         records = sheet.get_all_records()
         df = pd.DataFrame(records)
