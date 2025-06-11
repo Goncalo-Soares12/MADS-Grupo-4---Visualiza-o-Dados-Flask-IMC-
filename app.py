@@ -44,7 +44,7 @@ except Exception as e:
     print(f"Falha na autenticação: {str(e)}")
     client = None
 
-titleico = "<title>Dados Públicos e Privados</title><link rel='icon' type='image/png' href='static/obesidade.ico'>"
+titleico = "<title>Dados Públicos e Privados</title><link rel='icon' type='image/png' href='https://cdn-icons-png.flaticon.com/512/3105/3105825.png'>"
 datatables_css_js = """
 <!-- DataTables -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
