@@ -109,7 +109,7 @@ def home():
             <li><b>&lt; 18.5:</b> Abaixo do peso 💀🦴</li>
             <li><b>18.5 - 24.9:</b> Peso normal ✅🧍‍♂️🧍‍♀️</li>
             <li><b>25 - 29.9:</b> Sobrepeso ⚠️</li>
-            <li><b>&ge; 30:</b> Obesidade <img src="/static/obesidade.ico" alt="Obesidade" style="width:20px; vertical-align:middle;"></li>
+            <li><b>&ge; 30:</b> Obesidade <img src="static/obesidade.ico" alt="Obesidade" style="width:20px; vertical-align:middle;"></li>
         </ul>
         <p>Essas categorias ajudam a identificar possíveis riscos à saúde e motivar hábitos mais saudáveis.</p>
     </div><br>
