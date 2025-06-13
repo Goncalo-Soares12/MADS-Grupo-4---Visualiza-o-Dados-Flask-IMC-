@@ -1,42 +1,47 @@
 # 🌐 Sistema de Visualização de Dados com Render - IMC
 
-Este é um projeto web em Python/Flask que apresenta uma página pública e áreas privadas com diferentes níveis de acesso a dados pessoais e de saúde fictícios, com foco no **IMC (Índice de Massa Corporal)**.
-
-## 📌 Funcionalidades
-
-- ✅ Página pública com dados básicos e explicação do IMC
-- 🔐 Área privada Nível 1: acesso com palavra-passe (`acesso1`) com mais detalhes, incluindo email e telefone
-- 🔐 Área privada Nível 2: acesso com palavra-passe (`acesso2`) com mapa interativo
-- 🔑 Acesso individual por NIF
-- 📊 Tabelas dinâmicas com ordenação, busca e paginação via DataTables
-- 📁 Dados carregados de um ficheiro Google Sheet: [GoogleSheet](https://docs.google.com/spreadsheets/d/1QPioUWqLQ0v5HZ4An0exK52sNCOSIyiDsxpMgM0cKxA/edit?gid=940413956#gid=940413956)
+Este é um projeto web em Python/Flask que apresenta uma página pública e áreas privadas com diferentes níveis de acesso a dados fictícios de pessoas e saúde, com foco no **IMC (Índice de Massa Corporal)**.
 
 ---
 
-## ⚙️ Tecnologias
+## 📌 Funcionalidades
+
+- ✅ Página pública com explicação do IMC e tabela interativa
+- 🔐 Área privada Nível 1: acesso com palavra-passe `acesso1`, com dados adicionais (email, telefone) e gráfico interativo
+- 🔐 Área privada Nível 2: acesso com palavra-passe `acesso2`, com mapa interativo baseado em localização e IMC
+- 🔑 Acesso individual por NIF, com visualização gráfica personalizada
+- 📊 Tabelas interativas com ordenação, busca e paginação (via DataTables)
+- 🌍 Mapa com **Folium** e clusters baseados em classificação do IMC
+- 📈 Gráficos dinâmicos com **Plotly**
+- 📁 Dados carregados automaticamente a partir de um Google Sheet:  
+  [🔗 Ver GoogleSheet](https://docs.google.com/spreadsheets/d/1QPioUWqLQ0v5HZ4An0exK52sNCOSIyiDsxpMgM0cKxA/edit#gid=940413956)
+
+---
+
+## ⚙️ Tecnologias Utilizadas
 
 - Python 3
 - Flask
 - pandas
-- HTML + CSS + JS (DataTables)
+- Plotly
+- Folium
+- gspread + OAuth2 (Google Sheets API)
+- DataTables (JS)
+- HTML + CSS
 - Deploy: [Render.com](https://mads-grupo-4-visualiza-o-dados-render-imc.onrender.com)
 
 ---
 
-## 🧮 Explicação sobre o IMC
+## 🧮 O que é o IMC?
 
-O **Índice de Massa Corporal (IMC)** é uma fórmula usada para verificar se uma pessoa está com o peso ideal:
-
-```
-IMC = Peso (kg) / Altura² (m²)
-```
+> **IMC = Peso (kg) / Altura² (m²)**
 
 | IMC           | Classificação       |
 |---------------|---------------------|
-| Menor que 18.5| Abaixo do peso      |
-| 18.5 - 24.9   | Peso normal ✅       |
-| 25 - 29.9     | Sobrepeso ⚠️        |
-| 30 ou mais    | Obesidade 🚨        |
+| Menor que 18.5| Abaixo do peso 💀     |
+| 18.5 - 24.9   | Peso normal ✅        |
+| 25 - 29.9     | Sobrepeso ⚠️         |
+| 30 ou mais    | Obesidade 🚨         |
 
 ---
 
@@ -45,34 +50,40 @@ IMC = Peso (kg) / Altura² (m²)
 ```
 flask-dados-imc/
 │
-├── app.py                  
-├── README.md               
-└── static/
-    └── obesidade.ico
+├── app.py                  # Aplicação principal Flask
+├── static/
+│   └── obesidade.ico       # Ícone para IMC alto
+└── README.md               # Este documento
 ```
 
 ---
 
-## 🔐 Palavras-passe de acesso (teste)
+## 🔐 Palavras-passe de Acesso (teste)
 
 - Nível 1: `acesso1`
 - Nível 2: `acesso2`
-- NIF individual: Digite um NIF existente na base de dados
+- NIF individual: digite um NIF presente no Google Sheet
 
 ---
 
-## 📦 requirements.txt
+## 📦 requirements.txt (Corrigido)
 
 ```txt
 Flask
 pandas
-openpyxl
+gspread
+oauth2client
+plotly
+folium
+os
+datetime
 ```
 
 ---
 
-## 🛡️ Aviso
-
-> **Este projeto utiliza dados fictícios para fins educativos. Nenhum dado real é utilizado.**
 
 ---
+
+## 🛡️ Aviso Legal
+
+> Este projeto utiliza **dados fictícios** apenas para fins educacionais. Nenhuma informação real de pessoas foi usada.
