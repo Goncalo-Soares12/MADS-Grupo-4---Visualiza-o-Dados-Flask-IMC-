@@ -64,10 +64,15 @@ bottomline = f"<hr color=green><small><i>{agora} | exemplo educativo</i></small>
 keyword = ""
 nif_digitado = ""
 
+#Calcular Idade
 def calcular_idade(data_nascimento):
     hoje = datetime.datetime.today()
     return hoje.year - data_nascimento.year - ((hoje.month, hoje.day) < (data_nascimento.month, data_nascimento.day))
 
+def calcular_imc(peso, altura):
+        return peso / (altura ** 2)
+
+    
 def load_data():
     try:
         sheet = client.open_by_key(SHEET_ID).sheet1
@@ -77,6 +82,9 @@ def load_data():
         # Conversão de tipos
         df['Data de Nascimento'] = pd.to_datetime(df['Data de Nascimento'])
         df['Idade'] = df['Data de Nascimento'].apply(calcular_idade)
+
+        df['IMC'] = df.apply(lambda row: calcular_imc(row['Peso (kg)'], row['Altura (m)']), axis=1)
+        df['IMC'] = df['IMC'].round(2)
         
         # Garante que latitude e longitude são numéricas
         df['Latitude'] = pd.to_numeric(df['Latitude'], errors='coerce')
@@ -106,7 +114,7 @@ def home():
         <p style='text-align: center; font-size: 1.2em;'><b>IMC = Peso (kg) / Altura² (m²)</b></p>
         <h4>📊 Classificações de IMC:</h4>
         <ul>
-            <li><b>&lt; 18.5:</b> Abaixo do peso 💀🦴</li>
+            <li><b>&lt; 18.5:</b> Abaixo do peso normal 💀🦴</li>
             <li><b>18.5 - 24.9:</b> Peso normal ✅🧍‍♂️🧍‍♀️</li>
             <li><b>25 - 29.9:</b> Sobrepeso ⚠️</li>
             <li><b>&ge; 30:</b> Obesidade <img src="static/obesidade.ico" alt="Obesidade" style="width:20px; vertical-align:middle;"></li>
@@ -137,10 +145,22 @@ def privado1():
     cols = ['Nome', 'Idade', 'Altura (m)', 'Peso (kg)', 'IMC', 'Telefone', 'NIF', 'Email', 'Género']
     tabela = df[cols].to_html(index=False, classes='display', justify='center')
 
-    fig = px.scatter(df, x='Altura (m)', y='Peso (kg)', color='Género', title='Peso vs Altura')
+    fig = px.scatter(
+    df,
+    x='Altura (m)',
+    y='Peso (kg)',
+    color='Género',
+    size='IMC',
+    hover_data=['Nome', 'IMC', 'Idade'],
+    title='Relação entre Altura, Peso e IMC por Género',
+    labels={'Peso (kg)': 'Peso (kg)', 'Altura (m)': 'Altura (m)'}
+    )
+    fig.update_traces(marker=dict(opacity=0.7, line=dict(width=1, color='DarkSlateGrey')))
+    fig.update_layout(template="plotly_white")
     graph_html = fig.to_html(full_html=False)
 
     return render_page("🔐 Dados Privados - Nível 1", tabela + graph_html, link_home=True)
+
 
 @app.route("/privado2")
 def privado2():
@@ -148,20 +168,14 @@ def privado2():
         return redirect("/")
     
     df = load_data()
-    
-    # Verifica se há dados válidos
     if df.empty or 'Latitude' not in df.columns or 'Longitude' not in df.columns:
         return render_page("🔐 Dados Privados - Nível 2", 
-                         "<p style='color:red'>Dados de localização inválidos ou não encontrados</p>", 
-                         link_home=True)
+                           "<p style='color:red'>Dados de localização inválidos ou não encontrados</p>", 
+                           link_home=True)
     
-    # Cria o mapa
-    try:
-        center_lat = df['Latitude'].mean()
-        center_lon = df['Longitude'].mean()
-    except:
-        center_lat = df['Latitude'].iloc[0]
-        center_lon = df['Longitude'].iloc[0]
+    # Cálculo do centro do mapa
+    center_lat = df['Latitude'].mean()
+    center_lon = df['Longitude'].mean()
     
     mapa = folium.Map(location=[center_lat, center_lon], zoom_start=6)
     marker_cluster = MarkerCluster().add_to(mapa)
@@ -169,24 +183,35 @@ def privado2():
     for _, row in df.iterrows():
         imc = row['IMC']
         if imc < 18.5:
-            icon_color = 'blue'
+            emoji = "💀"
         elif imc < 25:
-            icon_color = 'green'
+            emoji = "✅"
         elif imc < 30:
-            icon_color = 'orange'
+            emoji = "⚠️"
         else:
-            icon_color = 'red'
+            emoji = "<img src='/static/obesidade.ico' style='width:20px;'>"
 
+        # Usa DivIcon para mostrar o emoji diretamente
         folium.Marker(
-            location=[row['Latitude'], row['Longitude']],
-            popup=f"{row['Nome']} - IMC: {imc:.1f}",
-            icon=folium.Icon(color=icon_color)
+        location=[row['Latitude'], row['Longitude']],
+        popup=folium.Popup(f"{row['Nome']} - IMC: {imc:.1f}", max_width=300),
+        icon=folium.DivIcon(html=f"""<div style="font-size: 24px">{emoji}</div>""")
         ).add_to(marker_cluster)
 
-    # Retorna incorporando o mapa diretamente
-    return render_page("🔐 Dados Privados - Nível 2", 
-                      mapa._repr_html_(), 
-                      link_home=True)
+    legenda_html = """
+    <div style='position: fixed; 
+                bottom: 50px; left: 50px; width: 240px; z-index:9999; font-size:14px;
+                background-color: white; padding: 10px; border: 2px solid gray; border-radius: 8px;'>
+        <b>Legenda IMC:</b><br>
+        💀 Abaixo do peso normal<br>
+        ✅ Peso normal<br>
+        ⚠️ Sobrepeso<br>
+        <img src='static/obesidade.ico' style='width:20px; vertical-align:middle;'> Obesidade
+    </div>
+    """
+
+    mapa_html = mapa._repr_html_() + legenda_html
+    return render_page("🔐 Dados Privados - Nível 2", mapa_html, link_home=True)
 
 @app.route("/privado3")
 def privado3():
@@ -198,12 +223,31 @@ def privado3():
 
     tabela = pessoa.to_html(index=False, classes='display', justify='center')
 
-    fig1 = px.scatter(pessoa, x='Altura (m)', y='Peso (kg)', title='Peso vs Altura')
+    fig1 = px.scatter(
+    pessoa,
+    x='Altura (m)',
+    y='Peso (kg)',
+    size='IMC',
+    color_discrete_sequence=["#636EFA"],
+    title=f'Peso vs Altura de {pessoa["Nome"].values[0]}',
+    hover_data=['IMC']
+    )
+    fig1.update_traces(marker=dict(size=30, opacity=0.8))
+    fig1.update_layout(template="plotly_white")
     graph1_html = fig1.to_html(full_html=False)
 
     datas = pd.date_range(end=datetime.datetime.today(), periods=5).to_pydatetime().tolist()
     imcs = [pessoa['IMC'].values[0] - i for i in range(5)]
-    fig2 = px.line(x=datas, y=imcs, labels={'x': 'Data', 'y': 'IMC'}, title='Evolução do IMC')
+    fig2 = px.line(
+    x=datas,
+    y=imcs,
+    markers=True,
+    labels={'x': 'Data', 'y': 'IMC'},
+    title=f'Evolução Simulada do IMC de {pessoa["Nome"].values[0]}',
+    line_shape="spline"
+    )
+    fig2.update_traces(line=dict(color="#EF553B", width=3), marker=dict(size=8))
+    fig2.update_layout(template="plotly_white")
     graph2_html = fig2.to_html(full_html=False)
 
     return render_page("🔐 Acesso Individual por NIF", tabela + graph1_html + graph2_html, link_home=True)
